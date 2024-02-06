@@ -1,6 +1,4 @@
 import 'package:app_sol_y_cobre/src/pages/principal_screen.dart';
-import 'package:app_sol_y_cobre/src/pages/register_screen.dart';
-//import 'package:app_sol_y_cobre/src/widget/registro.dart';
 import 'package:flutter/material.dart';
 
 class Formulario extends StatefulWidget { 
@@ -111,47 +109,17 @@ class _FormularioState extends State<Formulario> {
               onPressed: (){
 
                 if(_formularioEstado.currentState!.validate()){
+                  
                   //Realizar el envio de datos para guardar
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context)=>const Principal())
+                  );
                 }
-
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context)=>const Principal())
-                );
 
               },
 
               child: const Text('Iniciar Sesion'),
-
-            ),
-
-            // Espacios entre los botones
-            const SizedBox(height: 20,),
-            const SizedBox(height: 20, child: Text("¿No tienes Cuenta?")),
-            
-            ElevatedButton(
-
-              style: TextButton.styleFrom(
-
-                foregroundColor: Colors.orange[700],
-                padding: const EdgeInsets.symmetric(
-
-                  horizontal: 30,
-
-                )
-
-              ),
-
-              onPressed: () => {
-
-                //Redirigir a formulario de registro
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context)=>const RegisterScreen())
-                )
-              }, 
-
-              child: const Text('Crear Cuenta'),
 
             ),
           ],

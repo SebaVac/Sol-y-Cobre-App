@@ -1,3 +1,5 @@
+import 'package:app_sol_y_cobre/src/pages/ficha_screen.dart';
+import 'package:app_sol_y_cobre/src/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class Principal extends StatelessWidget {
@@ -5,6 +7,67 @@ class Principal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget> [
+          Image.asset('images/logo2.png'),
+          //Opciones en pantalla
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch, // Para que los botones ocupen todo el ancho disponible
+            children: [
+              ElevatedButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.orange[700],
+                ),
+                onPressed: () {
+                  // Acción al presionar el botón
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context)=> const FichaScreen())
+                  );
+                },
+                child: const Text('Nueva Ficha'),
+              ),
+
+              const SizedBox(height: 20), // Espacio entre los botones
+
+              ElevatedButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.orange[700],
+                ),
+                onPressed: () {
+                  // Acción al presionar el botón
+                },
+                child: const Text('Historial de Fichas'),
+              ),
+              
+              const SizedBox(height: 20), // Espacio entre los botones
+
+              ElevatedButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.orange[700],
+                ),
+                onPressed: () {
+                  // Acción al presionar el botón
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => const HomeScreen())
+                  );
+                },
+                child: const Text('Cerrar Sesion'),
+              ),
+            ],
+          )
+
+
+        ],
+      ),
+    );
   }
 }

@@ -1,6 +1,6 @@
 # app_sol_y_cobre
 
-A new Flutter project.
+Aplicación para dispositivos moviles (Android e IOs).
 
 ## Getting Started
 

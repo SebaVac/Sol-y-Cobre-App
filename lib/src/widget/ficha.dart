@@ -1,4 +1,4 @@
-//import 'package:app_sol_y_cobre/src/pages/encuesta_screen.dart';
+import 'package:app_sol_y_cobre/src/pages/encuesta_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 import 'package:intl/intl.dart';
@@ -554,10 +554,10 @@ class _FichaState extends State<Ficha> {
 
             ElevatedButton(
               onPressed: (){
-                //Navigator.push(
-                //    context, 
-                //    MaterialPageRoute(builder: (context)=>const EncuestaScreen())
-                //  );
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context)=>const EncuestaScreen())
+                );
               },
 
               style: TextButton.styleFrom(

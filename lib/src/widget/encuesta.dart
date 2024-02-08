@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
 class Encuesta extends StatefulWidget {
-  const Encuesta({Key? key}) : super(key: key);
+  const Encuesta({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -20,6 +20,8 @@ class _EncuestaState extends State<Encuesta> {
     '¿El Conductor Condujo sin Hablar por Celular?': null,
     '¿Su Traslado fue Agradable?': null,
   };
+
+  //final GlobalKey<FormState> _encuestaEstado = GlobalKey<FormState>();
 
   final SignatureController _signatureController = SignatureController(
     penStrokeWidth: 2,

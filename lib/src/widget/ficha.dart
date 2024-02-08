@@ -17,12 +17,24 @@ class _FichaState extends State<Ficha> {
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
   );
+
+  final GlobalKey<FormState> _fichaEstado = GlobalKey<FormState>();
   
   final TextEditingController _rutController = TextEditingController();
-
+  final TextEditingController _nombreController = TextEditingController(); // Agregado
+  
+  final TextEditingController _lugarInicioController = TextEditingController(); // Agregado 
+  final TextEditingController _lugarTerminoController = TextEditingController(); // Agregado
+  
   final TextEditingController _horaSolicitudController = TextEditingController();
   final TextEditingController _horaInicioController = TextEditingController();
   final TextEditingController _horaTerminoController = TextEditingController();
+  
+  final TextEditingController _tiempoEsperaController = TextEditingController(); // Agregado
+  final TextEditingController _patenteController = TextEditingController(); // Agregado
+  final TextEditingController _sobretiempoController = TextEditingController(); // Agregado
+  
+  final TextEditingController _nombreConductorController = TextEditingController(); // Agregado
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -59,11 +71,29 @@ class _FichaState extends State<Ficha> {
     // Por ejemplo:
     // final signatureImage = await _signatureController.toPngBytes();
     // Luego puedes guardar signatureImage como desees.
-    print('Firma guardada');
+    //print('Firma guardada');
   }
 
   void _clearSignature() {
     _signatureController.clear();
+  }
+
+  void _guardarFormulario() {
+    // Aquí puedes guardar los datos del formulario
+    // Asegúrate de guardar todos los datos necesarios
+    // Para este ejemplo, imprimiré los datos en la consola
+
+    print('Nombre: ${_nombreController.text}');
+    print('Lugar de Inicio: ${_lugarInicioController.text}');
+    print('Lugar de Término: ${_lugarTerminoController.text}');
+    print('Hora de Solicitud: ${_horaSolicitudController.text}');
+    print('Hora de Inicio: ${_horaInicioController.text}');
+    print('Hora de Término: ${_horaTerminoController.text}');
+    print('Tiempo de Espera: ${_tiempoEsperaController.text}');
+    print('Fecha: $_selectedDate');
+    print('Rut: ${_rutController.text}');
+    print('Patente: ${_patenteController.text}');
+    print('Sobretiempo: ${_sobretiempoController.text}');
   }
 
   @override
@@ -71,6 +101,9 @@ class _FichaState extends State<Ficha> {
     return ListView(
       children: <Widget>[
         Form(
+
+          key: _fichaEstado,
+
           child: Column(
 
           children: [
@@ -87,8 +120,14 @@ class _FichaState extends State<Ficha> {
               ),
 
               child: TextFormField(
+                controller: _nombreController,
 
                 validator: (value){ //validacion de campo
+
+                  if(value!.isEmpty){
+                    return "El campo esta vacio";
+                  }
+
                   return null;
                 },
 
@@ -111,9 +150,14 @@ class _FichaState extends State<Ficha> {
               ),
 
               child: TextFormField(
-                obscureText: true,
+                controller: _lugarInicioController,
 
                 validator: (value){ //validacion de campo
+
+                  if(value!.isEmpty){
+                    return "El campo esta vacio";
+                  }
+
                   return null;
                 },
 
@@ -135,8 +179,14 @@ class _FichaState extends State<Ficha> {
               ),
 
               child: TextFormField(
+                controller: _lugarTerminoController,
 
                 validator: (value){ //validacion de campo
+
+                  if(value!.isEmpty){
+                    return "El campo esta vacio";
+                  }
+
                   return null;
                 },
 
@@ -151,7 +201,9 @@ class _FichaState extends State<Ficha> {
 
             Row(
                 children: [
+
                   const SizedBox(width: 10),
+
                   const Text(
                     'Hora Solicitud:',
                     style: TextStyle(fontSize: 16),
@@ -162,18 +214,28 @@ class _FichaState extends State<Ficha> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
+                      
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey),
                       ),
+
                       child: TextFormField(
                         controller: _horaSolicitudController,
                         readOnly: true,
                         onTap: () => _selectTime(context, _horaSolicitudController),
+                        
                         decoration: const InputDecoration(
                           hintText: "Ingrese Hora de la Solicitud",
                           border: InputBorder.none,
                         ),
+                        
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
+                          return null;
+                        }
                       ),
                     ),
                   ),
@@ -184,27 +246,41 @@ class _FichaState extends State<Ficha> {
 
             Row(
                 children: [
+
                   const SizedBox(width: 10),
+
                   const Text(
                     'Hora Inicio:',
                     style: TextStyle(fontSize: 16),
                   ),
+
                   const SizedBox(width: 10),
+
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
+                      
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey),
                       ),
+
                       child: TextFormField(
                         controller: _horaInicioController, // Asigna el controlador para la hora
                         readOnly: true, // Hace que el campo de texto sea de solo lectura
                         onTap: () => _selectTime(context, _horaInicioController), // Abre el selector de hora al hacer tap
+                        
                         decoration: const InputDecoration(
                           hintText: "Ingrese Hora de Inicio del Servicio",
                           border: InputBorder.none,
                         ),
+
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
+                          return null;
+                        }
                       ),
                     ),
                   ),
@@ -216,26 +292,39 @@ class _FichaState extends State<Ficha> {
             Row(
                 children: [
                   const SizedBox(width: 10),
+                  
                   const Text(
                     'Hora Termino:',
                     style: TextStyle(fontSize: 16),
                   ),
+
                   const SizedBox(width: 10),
+                  
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
+                      
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey),
                       ),
+
                       child: TextFormField(
                         controller: _horaTerminoController, // Asigna el controlador para la hora
                         readOnly: true, // Hace que el campo de texto sea de solo lectura
                         onTap: () => _selectTime(context, _horaTerminoController), // Abre el selector de hora al hacer tap
+                        
                         decoration: const InputDecoration(
                           hintText: "Ingrese Hora de Termino del Servicio",
                           border: InputBorder.none,
                         ),
+
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
+                          return null;
+                        }
                       ),
                     ),
                   ),
@@ -267,8 +356,12 @@ class _FichaState extends State<Ficha> {
                       ),
 
                       child: TextFormField(
+                        controller: _tiempoEsperaController,
 
-                        validator: (value) { //validacion de campo
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
                           return null;
                         },
 
@@ -368,8 +461,12 @@ class _FichaState extends State<Ficha> {
                       ),
 
                       child: TextFormField(
+                        controller: _patenteController,
 
-                        validator: (value) { //validacion de campo
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
                           return null;
                         },
 
@@ -404,8 +501,12 @@ class _FichaState extends State<Ficha> {
                       ),
 
                       child: TextFormField(
+                        controller: _sobretiempoController,
 
-                        validator: (value) { //validacion de campo
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "El campo esta vacio";
+                          }
                           return null;
                         },
 
@@ -426,6 +527,7 @@ class _FichaState extends State<Ficha> {
                 ),
                 
                 child: TextFormField(
+
                   maxLines: 5, // Permite varias líneas de texto
 
                   decoration: const InputDecoration(
@@ -439,12 +541,15 @@ class _FichaState extends State<Ficha> {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
+                
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey),
                 ),
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  
                   children: [
                     const Text(
                       'Rut:',
@@ -455,12 +560,25 @@ class _FichaState extends State<Ficha> {
                     
                     TextFormField(
                       controller: _rutController,
-                      decoration: InputDecoration(
+                     
+                     decoration: InputDecoration(
                         hintText: "Ingrese su Rut",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+
+                      validator: (value) {
+                        if(value!.isEmpty){
+                          return "El campo esta vacio";
+                        }
+
+                        if(!RegExp(r'^\d{1,2}\.\d{3}\.\d{3}[-][0-9kK]{1}$').hasMatch(value)){
+                          return "Ingrese un Rut valido";
+                        }
+                        
+                        return null;
+                      },
                     ),
                   ],
                 ),
@@ -529,7 +647,7 @@ class _FichaState extends State<Ficha> {
 
               const SizedBox(height: 17),
 
-              Container( //Lugar de Termino del Servicio
+              Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 
                 decoration: BoxDecoration(
@@ -538,8 +656,12 @@ class _FichaState extends State<Ficha> {
                 ),
 
                 child: TextFormField(
+                  controller: _nombreConductorController,
 
-                  validator: (value){ //validacion de campo
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return "El campo esta vacio";
+                    }
                     return null;
                   },
 
@@ -569,7 +691,9 @@ class _FichaState extends State<Ficha> {
 
             ElevatedButton(
               onPressed: (){
-
+                if(_fichaEstado.currentState!.validate()){
+                  _guardarFormulario();
+                }
               },
 
               style: TextButton.styleFrom(

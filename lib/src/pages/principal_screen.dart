@@ -55,19 +55,52 @@ class Principal extends StatelessWidget {
                 ),
                 onPressed: () {
                   // Acción al presionar el botón
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(builder: (context) => const HomeScreen())
-                  );
+                  _mostrarAlerta(context);
                 },
                 child: const Text('Cerrar Sesion'),
               ),
             ],
           )
-
-
         ],
       ),
     );
   }
+}
+
+void _mostrarAlerta(BuildContext context){
+  showDialog(
+    builder: (context) => AlertDialog(
+      title: const Text("Cerrar Sesion"),
+      content: const Text("¿Quieres Cerrar la Sesion Actual?"),
+      actions: [
+        TextButton(
+          onPressed:(){
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context, 
+              MaterialPageRoute(builder: (context) => const HomeScreen())
+            );
+          } , 
+          child: const Text(
+            "Cerrar Sesión",
+            style: TextStyle(
+              color: Colors.deepOrangeAccent
+            ), // Cambia el color del texto a naranja
+          ),
+        ),
+
+        TextButton(
+          onPressed:(){
+            Navigator.pop(context);
+          } , 
+          child: const Text(
+            "Seguir Aquí",
+            style: TextStyle(color: Colors.deepOrangeAccent), // Cambia el color del texto a naranja
+          ),
+        ),
+      ],
+    ),
+    barrierDismissible: false,
+    context: context,
+  );
 }

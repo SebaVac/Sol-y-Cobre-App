@@ -1,4 +1,5 @@
 import 'package:app_sol_y_cobre/src/pages/encuesta_screen.dart';
+import 'package:app_sol_y_cobre/src/widget/encuesta.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +12,28 @@ class Ficha extends StatefulWidget {
 }
 
 class _FichaState extends State<Ficha> {
+
+  FichaPersona ficha = FichaPersona(null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null);
+
   DateTime? _selectedDate;
+
   final SignatureController _signatureController = SignatureController(
     penStrokeWidth: 2,
     penColor: Colors.black,
@@ -19,7 +41,10 @@ class _FichaState extends State<Ficha> {
   );
 
   final GlobalKey<FormState> _fichaEstado = GlobalKey<FormState>();
-  
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _proyectoController = TextEditingController();
+
   final TextEditingController _rutController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController(); // Agregado
   
@@ -31,10 +56,18 @@ class _FichaState extends State<Ficha> {
   final TextEditingController _horaTerminoController = TextEditingController();
   
   final TextEditingController _tiempoEsperaController = TextEditingController(); // Agregado
+  final TextEditingController _movilController = TextEditingController();
   final TextEditingController _patenteController = TextEditingController(); // Agregado
   final TextEditingController _sobretiempoController = TextEditingController(); // Agregado
   
+  final TextEditingController _observacionesController = TextEditingController();
   final TextEditingController _nombreConductorController = TextEditingController(); // Agregado
+
+  String? selectedOption;
+
+  String observaciones = '';
+
+  List<EncuestaOpcional>? encuesta;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -65,12 +98,14 @@ class _FichaState extends State<Ficha> {
     }
   }
 
-  void _saveSignature() {
+  Future<void> _saveSignature() async {
     // Aquí puedes guardar la firma, por ejemplo, guardándola como una imagen.
     // Puedes acceder a la firma a través del _signatureController.signature.
     // Por ejemplo:
-    // final signatureImage = await _signatureController.toPngBytes();
-    // Luego puedes guardar signatureImage como desees.
+    final signatureImage = await _signatureController.toPngBytes();
+    setState(() {
+      ficha.firma = Image.memory(signatureImage!);
+    });
     //print('Firma guardada');
   }
 
@@ -78,22 +113,27 @@ class _FichaState extends State<Ficha> {
     _signatureController.clear();
   }
 
-  void _guardarFormulario() {
+  void _guardarFormulario(FichaPersona ficha, List<EncuestaOpcional>? encuesta) {
     // Aquí puedes guardar los datos del formulario
-    // Asegúrate de guardar todos los datos necesarios
-    // Para este ejemplo, imprimiré los datos en la consola
+  ficha.nombre = _nombreController.text;
+  ficha.lugarInicio = _lugarInicioController.text;
+  ficha.lugarTermino = _lugarTerminoController.text;
+  ficha.horaSolicitud = _horaSolicitudController.text;
+  ficha.horaInicio = _horaInicioController.text;
+  ficha.horaTermino = _horaTerminoController.text;
+  ficha.tiempoEspera = _tiempoEsperaController.text;
+  ficha.fecha = _selectedDate;
+  ficha.rut = _rutController.text;
+  ficha.sobretiempo = _sobretiempoController.text;
+  ficha.movil = _movilController.text;
+  ficha.patente = _patenteController.text;
+  ficha.proyecto = _proyectoController.text;
+  ficha.empresa = selectedOption;
+  ficha.observaciones = observaciones;
+  ficha.nombreConductor = _nombreConductorController.text;
 
-    print('Nombre: ${_nombreController.text}');
-    print('Lugar de Inicio: ${_lugarInicioController.text}');
-    print('Lugar de Término: ${_lugarTerminoController.text}');
-    print('Hora de Solicitud: ${_horaSolicitudController.text}');
-    print('Hora de Inicio: ${_horaInicioController.text}');
-    print('Hora de Término: ${_horaTerminoController.text}');
-    print('Tiempo de Espera: ${_tiempoEsperaController.text}');
-    print('Fecha: $_selectedDate');
-    print('Rut: ${_rutController.text}');
-    print('Patente: ${_patenteController.text}');
-    print('Sobretiempo: ${_sobretiempoController.text}');
+  // Imprimir mensaje en la consola
+    print('Los datos del formulario se guardaron correctamente: $ficha');
   }
 
   @override
@@ -108,7 +148,53 @@ class _FichaState extends State<Ficha> {
 
           children: [
 
-            const SizedBox(height: 17,),
+            const SizedBox(height: 17),
+
+            Form(
+              key: _formKey,
+              child: Row(
+                children: [
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Empresa: ',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedOption,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedOption = newValue;
+                      });
+                    },
+                    items: <String?>[null, 'MSI', 'ECORA', 'ASAP', 'WORLEY', 'PROACTIVE', 'COBRA', 'SOUTH CRANES']
+                        .map<DropdownMenuItem<String>>((String? value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value ?? ' Selecciona una opción'),
+                      );
+                    }).toList(),
+
+                  ),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _proyectoController,
+                      decoration: const InputDecoration(
+                        hintText: 'Ingrese Proyecto',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingrese un proyecto';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 17),
 
             Container( //Nombre del Usuario
 
@@ -234,6 +320,7 @@ class _FichaState extends State<Ficha> {
                           if(value!.isEmpty){
                             return "El campo esta vacio";
                           }
+
                           return null;
                         }
                       ),
@@ -279,6 +366,7 @@ class _FichaState extends State<Ficha> {
                           if(value!.isEmpty){
                             return "El campo esta vacio";
                           }
+
                           return null;
                         }
                       ),
@@ -323,6 +411,7 @@ class _FichaState extends State<Ficha> {
                           if(value!.isEmpty){
                             return "El campo esta vacio";
                           }
+
                           return null;
                         }
                       ),
@@ -425,11 +514,20 @@ class _FichaState extends State<Ficha> {
                         border: Border.all(color: Colors.grey),
                       ),
 
-                      child: const TextField(
+                      child: TextFormField(
+                        controller: _movilController,
                         keyboardType: TextInputType.phone, // Especifica el tipo de teclado numérico
-                        decoration: InputDecoration(
+                        
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
+                        validator: (value) {
+                          if(value == null || value.isEmpty) {
+                            return "El campo esta vacio";
+                          }
+
+                          return null;
+                        }
                       ),
                     ),
                   ),
@@ -507,6 +605,8 @@ class _FichaState extends State<Ficha> {
                           if(value!.isEmpty){
                             return "El campo esta vacio";
                           }
+
+                          //String sobretiempo = value;
                           return null;
                         },
 
@@ -527,9 +627,8 @@ class _FichaState extends State<Ficha> {
                 ),
                 
                 child: TextFormField(
-
+                  controller: _observacionesController,
                   maxLines: 5, // Permite varias líneas de texto
-
                   decoration: const InputDecoration(
                     hintText: "Observaciones",
                     border: InputBorder.none,
@@ -675,8 +774,8 @@ class _FichaState extends State<Ficha> {
             const SizedBox(height: 20),
 
             ElevatedButton(
-              onPressed: (){
-                Navigator.push(
+              onPressed: () async {
+                ficha.encuesta = await Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context)=>const EncuestaScreen())
                 );
@@ -692,7 +791,7 @@ class _FichaState extends State<Ficha> {
             ElevatedButton(
               onPressed: (){
                 if(_fichaEstado.currentState!.validate()){
-                  _guardarFormulario();
+                  _guardarFormulario(ficha, encuesta);
                 }
               },
 
@@ -708,4 +807,28 @@ class _FichaState extends State<Ficha> {
       ],
     );
   }
+}
+
+class FichaPersona{
+  String? nombre;
+  String? lugarInicio;
+  String? lugarTermino;
+  String? horaSolicitud;
+  String? horaInicio;
+  String? horaTermino;
+  String? tiempoEspera;
+  DateTime? fecha;
+  String? rut;
+  String? sobretiempo;
+  String? movil;
+  String? patente;
+  String? proyecto;
+  String? empresa;
+  String? observaciones;
+  Image? firma;
+  String? nombreConductor;
+  EncuestaOpcional? encuesta;
+
+  FichaPersona(this.nombre, this.lugarInicio, this.lugarTermino, this.horaSolicitud, this.horaInicio, this.horaTermino, this.tiempoEspera, this.fecha, this.rut, this.sobretiempo,this.movil, this.patente, this.proyecto, this.empresa, this.firma, this.nombreConductor, this.observaciones, this.encuesta);
+
 }

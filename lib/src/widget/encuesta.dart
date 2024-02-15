@@ -10,6 +10,9 @@ class Encuesta extends StatefulWidget {
 }
 
 class _EncuestaState extends State<Encuesta> {
+
+  EncuestaOpcional encuesta = EncuestaOpcional(null, null, null);
+
   final Map<String, bool?> _respuestas = {
     '¿El Movil llego a la Hora?': null,
     '¿El Conductor Utilizo Cinturon de Seguridad?': null,
@@ -29,12 +32,15 @@ class _EncuestaState extends State<Encuesta> {
     exportBackgroundColor: Colors.white,
   );
 
-  void _saveSignature() {
+  Future<void> _saveSignature() async {
     // Aquí puedes guardar la firma, por ejemplo, guardándola como una imagen.
     // Puedes acceder a la firma a través del _signatureController.signature.
     // Por ejemplo:
-    // final signatureImage = await _signatureController.toPngBytes();
-    // Luego puedes guardar signatureImage como desees.
+    final signatureImage = await _signatureController.toPngBytes();
+    setState(() {
+      encuesta.firmaUsuario = Image.memory(signatureImage!);
+    });
+
     print('Firma guardada');
   }
 
@@ -43,7 +49,6 @@ class _EncuestaState extends State<Encuesta> {
   }
 
   String _observaciones = '';
-  final String _firma = '';
 
   @override
   Widget build(BuildContext context) {
@@ -210,10 +215,15 @@ class _EncuestaState extends State<Encuesta> {
                     },
                   );
                 } else {
-                  // Aquí puedes enviar las respuestas y otros datos a donde quieras
+                  //Consola
                   print('Respuestas: $_respuestas');
                   print('Observaciones: $_observaciones');
-                  print('Firma: $_firma');
+
+                  encuesta.respuestas = _respuestas;
+                  encuesta.observaciones = _observaciones;
+                  // Aquí puedes enviar las respuestas y otros datos a donde quieras
+                  
+                  Navigator.pop(context, encuesta);
                 }
               },
               
@@ -228,4 +238,14 @@ class _EncuestaState extends State<Encuesta> {
       ),
     );
   }
+}
+
+class EncuestaOpcional{
+
+  Map<String, bool?>? respuestas;
+  String? observaciones;
+  Image? firmaUsuario;
+
+  EncuestaOpcional(this.respuestas, this.observaciones, this.firmaUsuario);
+
 }
